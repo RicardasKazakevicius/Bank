@@ -21,6 +21,14 @@ public class Main {
                 return AccountController.getAccount(req, res, accountData);
             }, new JsonTransformer());
             
+            get("/:id/sent", (req, res) -> {
+                return AccountController.getSentTransactions(req, res, accountData, tData);
+            }, new JsonTransformer());
+             
+            get("/:id/received", (req, res) -> {
+                return AccountController.getReceivedTransactions(req, res, accountData, tData);
+            }, new JsonTransformer());
+            
             post("", (req, res) -> {
                 return AccountController.createAccount(req, res, accountData);
             }, new JsonTransformer());

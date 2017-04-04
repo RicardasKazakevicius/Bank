@@ -26,6 +26,37 @@ public class AccountController {
         }
     }
     
+    public static Object getSentTransactions(Request request, Response response, 
+            AccountsData accountData, TransactionsData tData) {
+        try {
+            int id = Integer.valueOf(request.params("id"));
+            
+            if (tData.getAllSent(id).isEmpty()) 
+                throw new Exception("No sent transactions found with this account");
+            
+            return tData.getAllSent(id);
+        } catch(Exception e) {
+            response.status(HTTP_NOT_FOUND);
+            return new ErrorMessage("No sent transactions found with this account");
+        }
+    }
+    
+    public static Object getReceivedTransactions(Request request, Response response, 
+            AccountsData accountData, TransactionsData tData) {
+        try {
+            int id = Integer.valueOf(request.params("id"));
+            
+            if (tData.getAllReceived(id).isEmpty()) 
+                throw new Exception("No received transactions found with this account");
+            
+            return tData.getAllReceived(id);
+        } catch(Exception e) {
+            response.status(HTTP_NOT_FOUND);
+            return new ErrorMessage("No received transactions found with this account");
+        }
+    }
+    
+    
     public static Object createAccount(Request request, Response response, AccountsData accountData) {
         Account account = JsonTransformer.fromJson(request.body(), Account.class);
         accountData.create(account);

@@ -8,8 +8,8 @@ public class TransactionsData {
     public TransactionsData() {
         
         List<Transaction> transactionArray = Arrays.asList(
-            new Transaction(1, 1, 5, 10),
-            new Transaction(2, 2, 4, 20),
+            new Transaction(1, 1, 2, 10),
+            new Transaction(2, 2, 3, 20),
             new Transaction(3, 1, 3, 5)
         );
        
@@ -36,6 +36,18 @@ public class TransactionsData {
     public void update(int id, Transaction transaction) {
         transaction.setId(id);
         transactions.put(id, transaction);
+    }
+    
+    public List<Transaction> getAllSent(int id) {
+        return transactions.entrySet().stream().filter(
+                (entry) -> entry.getValue().getSenderId() == id
+        ).map( Map.Entry::getValue ).collect(Collectors.toList());
+    }
+    
+    public List<Transaction> getAllReceived(int id) {
+       return transactions.entrySet().stream().filter(
+                (entry) -> entry.getValue().getReceiverId() == id
+        ).map( Map.Entry::getValue ).collect(Collectors.toList());
     }
     
     public List<Transaction> getAll() {

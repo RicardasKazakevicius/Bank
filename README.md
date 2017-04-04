@@ -11,6 +11,10 @@ docker run -d -p 80:1234 superbank:v1
 
 /accounts/1  GET, UPDATE, PUT, DELETE
 
+/accounts/1/sent  GET
+
+/accounts/1/received  GET
+
 /transactions  GET, POST
 
 /transactions/1  GET, UPDATE, PUT, DELETE

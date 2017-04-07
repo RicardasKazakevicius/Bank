@@ -9,7 +9,7 @@ docker run -d -p 80:1234 superbank:v1
 ## Endpoints and methods
 /accounts  GET,POST
 
-/accounts/1  GET, UPDATE, PUT, DELETE
+/accounts/1  GET, PUT, DELETE
 
 /accounts/1/sent  GET
 
@@ -17,7 +17,7 @@ docker run -d -p 80:1234 superbank:v1
 
 /transactions  GET, POST
 
-/transactions/1  GET, UPDATE, PUT, DELETE
+/transactions/1  GET, PUT, DELETE
 
 ## Data
 

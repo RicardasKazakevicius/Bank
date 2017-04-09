@@ -6,7 +6,7 @@ import static spark.Spark.*;
  */
 public class Main {
     public static void main(String[] args) {
-        AccountsData accountData = new AccountsData();
+        AccountsData aData = new AccountsData();
         TransactionsData tData = new TransactionsData();
         
         port(1234);
@@ -14,31 +14,31 @@ public class Main {
         path("/accounts", () -> {
            
             get("", (req, res) -> {
-                return AccountController.getAllAccounts(req, res, accountData);
+                return AccountController.getAllAccounts(req, res, aData);
             }, new JsonTransformer());
             
             get("/:id", (req, res) -> {
-                return AccountController.getAccount(req, res, accountData);
+                return AccountController.getAccount(req, res, aData);
             }, new JsonTransformer());
             
             get("/:id/sent", (req, res) -> {
-                return AccountController.getSentTransactions(req, res, accountData, tData);
+                return AccountController.getSentTransactions(req, res, aData, tData);
             }, new JsonTransformer());
              
             get("/:id/received", (req, res) -> {
-                return AccountController.getReceivedTransactions(req, res, accountData, tData);
+                return AccountController.getReceivedTransactions(req, res, aData, tData);
             }, new JsonTransformer());
             
             post("", (req, res) -> {
-                return AccountController.createAccount(req, res, accountData);
+                return AccountController.createAccount(req, res, aData);
             }, new JsonTransformer());
             
             put("/:id", (req, res) -> {
-                return AccountController.updateAccount(req, res, accountData);
+                return AccountController.updateAccount(req, res, aData);
             }, new JsonTransformer());
             
             delete("/:id", (req, res) -> {
-                return AccountController.deleteAccount(req, res, accountData);
+                return AccountController.deleteAccount(req, res, aData);
             }, new JsonTransformer());
         });
         
@@ -53,11 +53,11 @@ public class Main {
            }, new JsonTransformer()); 
            
            post("", (req, res) -> {
-               return TransactionController.createTransaction(req, res, tData, accountData);
+               return TransactionController.createTransaction(req, res, tData, aData);
            }, new JsonTransformer()); 
            
            put("/:id", (req, res) -> {
-               return TransactionController.updateTransactiont(req, res, tData);
+               return TransactionController.updateTransactiont(req, res, tData, aData);
            }, new JsonTransformer()); 
            
            delete("/:id", (req, res) -> {

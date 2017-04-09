@@ -30,8 +30,16 @@ public class Account {
         balance = balance / 100;
     }
     
+    public String getName() {
+        return name;
+    }
+    
+    public String getSurname() {
+        return surname;
+    }
+
     public int getId() {
-        return this.id;
+        return id;
     }
     
     public double getBalance() {

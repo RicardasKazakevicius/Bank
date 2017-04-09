@@ -1,9 +1,6 @@
 import spark.Request;
 import spark.Response;
-/**
- *
- * @author ricardas
- */
+
 public class AccountController {
     private static final int HTTP_BAD_REQUEST = 400;
     private static final int HTTP_NOT_FOUND = 404;
@@ -22,7 +19,7 @@ public class AccountController {
             return account;
         } catch(Exception e) {
             response.status(HTTP_NOT_FOUND);
-            return new ErrorMessage("No account found with id " + request.params("id"));
+            return new ErrorMessage(e);
         }
     }
     
@@ -31,13 +28,19 @@ public class AccountController {
         try {
             int id = Integer.valueOf(request.params("id"));
             
-            if (tData.getAllSent(id).isEmpty()) 
-                throw new Exception("No sent transactions found with this account");
+            if (accountData.get(id) == null) {
+                throw new Exception("No account found with id " + id);
+            }
             
+            if (tData.getAllSent(id).isEmpty()) {
+                response.status(HTTP_NOT_FOUND);
+                return new ErrorMessage("No sent transactions found with account with id " +  request.params("id"));
+            }
             return tData.getAllSent(id);
+            
         } catch(Exception e) {
             response.status(HTTP_NOT_FOUND);
-            return new ErrorMessage("No sent transactions found with this account");
+            return new ErrorMessage(e);
         }
     }
     
@@ -46,33 +49,57 @@ public class AccountController {
         try {
             int id = Integer.valueOf(request.params("id"));
             
-            if (tData.getAllReceived(id).isEmpty()) 
-                throw new Exception("No received transactions found with this account");
+            if (accountData.get(id) == null) {
+                throw new Exception("No account found with id " + id);
+            }
             
+            if (tData.getAllReceived(id).isEmpty()) {
+                response.status(HTTP_NOT_FOUND);
+                return new ErrorMessage("No sent transactions found with account with id " +  request.params("id"));
+            }
             return tData.getAllReceived(id);
+            
         } catch(Exception e) {
             response.status(HTTP_NOT_FOUND);
-            return new ErrorMessage("No received transactions found with this account");
+            return new ErrorMessage(e);
         }
-    }
-    
+    } 
     
     public static Object createAccount(Request request, Response response, AccountsData accountData) {
         Account account = JsonTransformer.fromJson(request.body(), Account.class);
-        accountData.create(account);
-        return "Account created";
+        String accountStatus = checkAccount(account);
+        
+        if ("OK".equals(accountStatus)) {
+            accountData.create(account);
+            return accountStatus;
+        }
+        
+        response.status(HTTP_BAD_REQUEST);
+        return new ErrorMessage(accountStatus);
     }
     
     public static Object updateAccount(Request request, Response response, AccountsData accountData) {
         try {
             Account account = JsonTransformer.fromJson(request.body(), Account.class);
             int id = Integer.valueOf(request.params("id"));
-            accountData.update(id, account);
-            return "Account updated";
+            
+            if (accountData.get(id) == null) {
+                throw new Exception("No account found with id " + request.params("id"));
+            }
+            
+            String accountStatus = checkAccount(account);
+        
+            if ("OK".equals(accountStatus)) {
+                
+                accountData.update(id, account);
+                return accountStatus;
+            }
+            response.status(HTTP_BAD_REQUEST);
+            return new ErrorMessage(accountStatus);
              
         } catch(Exception e) {
            response.status(HTTP_NOT_FOUND);
-           return new ErrorMessage("No account found with id " + request.params("id"));
+           return new ErrorMessage(e);
         }
     }
      
@@ -85,10 +112,21 @@ public class AccountController {
             
             accountData.delete(id);
             return "Account with id " + id + " deleted";
+            
           } catch(Exception e) {
               response.status(HTTP_NOT_FOUND);
-              return new ErrorMessage("No account found with id " + request.params("id"));
+              return new ErrorMessage(e);
           }
+    }
+    
+    private static String checkAccount(Account account) {
+        
+        if ( (account.getName() == null) || ("".equals(account.getName())) )
+            return "No user name specified";
+        else if ( (account.getSurname() == null) || ("".equals(account.getSurname())) )
+            return "No user surname specified";
+        
+        return "OK";
     }
       
 }

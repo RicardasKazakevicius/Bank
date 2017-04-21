@@ -3,6 +3,10 @@
 ## Instalation
 docker pull ricardaskazakevicius/superbank:v1
 
+docker run -d -p 80:1234 ricardaskazakevicius/superbank:v1
+
+or
+
 docker build -t superbank:v1 .
 
 docker run -d -p 80:1234 superbank:v1

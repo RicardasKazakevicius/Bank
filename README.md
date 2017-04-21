@@ -1,9 +1,9 @@
 # Bank web service
 
 ## Instalation
-docker pull ricardaskazakevicius/superbank:v1
+docker pull ricardaskazakevicius/superbank:v10
 
-docker run -d -p 80:1234 ricardaskazakevicius/superbank:v1
+docker run -d -p 80:1234 ricardaskazakevicius/superbank:v10
 
 or
 

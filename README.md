@@ -1,6 +1,7 @@
 # Bank web service
 
 ## Instalation
+docker pull ricardaskazakevicius/superbank:v1
 
 docker build -t superbank:v1 .
 

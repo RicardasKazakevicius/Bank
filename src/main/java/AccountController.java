@@ -75,8 +75,7 @@ public class AccountController {
     
     public static Object createAccount(Request request, Response response, AccountsData accountData) {
         
-        String req = request.body();;
-        int id = 0;
+        String req = request.body();
         
         if (!request.pathInfo().equals("/accounts")) {
   

@@ -16,6 +16,10 @@ public class Transaction {
         this.id = id;
     }
     
+    public void setReceiversId(int receiversId) {
+        this.receiverId = receiversId;
+    }
+    
     public int getId() {
         return id;
     }

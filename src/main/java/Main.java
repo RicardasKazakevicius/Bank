@@ -85,6 +85,12 @@ public class Main {
                return TransactionController.createTransaction(req, res, tData, aData);
            }, new JsonTransformer()); 
            
+           post("/:id", (req, res) -> {
+               res.header("PATH", req.pathInfo());
+               res.header("Method", req.requestMethod());
+               return TransactionController.createTransaction(req, res, tData, aData);
+           }, new JsonTransformer()); 
+           
            put("/:id", (req, res) -> {
                res.header("PATH", req.pathInfo());
                res.header("Method", req.requestMethod());

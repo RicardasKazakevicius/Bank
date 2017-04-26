@@ -1,3 +1,11 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import spark.Request;
 import spark.Response;
 
@@ -66,7 +74,40 @@ public class AccountController {
     } 
     
     public static Object createAccount(Request request, Response response, AccountsData accountData) {
-        Account account = JsonTransformer.fromJson(request.body(), Account.class);
+        
+        String req = request.body();;
+        int id = 0;
+        
+        if (!request.pathInfo().equals("/accounts")) {
+  
+            try {
+                URL url = new URL("http://localhost:80/accounts/" + request.params(":id"));
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Accept", "application/json");
+                if (conn.getResponseCode() != 200) {
+                    throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+                }
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                            (conn.getInputStream())));
+                String out;
+                String output = "";
+                while ((out = br.readLine()) != null) {
+                    output = out;
+                }
+
+                conn.disconnect();
+                req = output;
+
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        Account account = JsonTransformer.fromJson(req, Account.class);
+       
         String accountStatus = checkAccount(account);
         
         if ("OK".equals(accountStatus)) {
@@ -74,7 +115,7 @@ public class AccountController {
             return accountStatus;
         }
         
-        response.status(HTTP_BAD_REQUEST);
+        response.status(HTTP_NOT_FOUND);
         return new ErrorMessage(accountStatus);
     }
     

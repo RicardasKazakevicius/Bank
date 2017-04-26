@@ -1,14 +1,14 @@
 
 public class Account {
     private int id;
-    private String name;
-    private String surname;
+    private String first_name; // first_name
+    private String last_name; // last_name
     private double balance;
     
     public Account(int id, String name, String surname, double balance) {
         this.id = id;
-        this.name = name;
-        this.surname = surname;
+        this.first_name = name;
+        this.last_name = surname;
         this.balance = balance;
     }
     
@@ -31,11 +31,11 @@ public class Account {
     }
     
     public String getName() {
-        return name;
+        return first_name;
     }
     
     public String getSurname() {
-        return surname;
+        return last_name;
     }
 
     public int getId() {

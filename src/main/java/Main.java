@@ -12,7 +12,14 @@ public class Main {
         port(1234);
         
         path("/accounts", () -> {
-           
+                      
+            post("/:id", (req, res) -> {
+                res.header("Path", req.pathInfo());
+                res.header("Method", req.requestMethod());
+                return AccountController.createAccount(req, res, aData);
+            }, new JsonTransformer());
+            
+            
             get("", (req, res) -> {
                 res.header("Path", req.pathInfo());
                 res.header("Method", req.requestMethod());
@@ -59,7 +66,7 @@ public class Main {
         });
         
         path("/transactions", () -> {
-            
+         
            get("", (req, res) -> {
                res.header("PATH", req.pathInfo());
                res.header("Method", req.requestMethod());
@@ -73,7 +80,7 @@ public class Main {
            }, new JsonTransformer()); 
            
            post("", (req, res) -> {
-               res.header("PATH", req.pathInfo() + "/" + (tData.getAll().size()+1));
+               res.header("PATH", req.pathInfo());
                res.header("Method", req.requestMethod());
                return TransactionController.createTransaction(req, res, tData, aData);
            }, new JsonTransformer()); 

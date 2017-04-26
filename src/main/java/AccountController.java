@@ -80,7 +80,7 @@ public class AccountController {
         if (!request.pathInfo().equals("/accounts")) {
   
             try {
-                URL url = new URL("http://localhost:80/accounts/" + request.params(":id"));
+                URL url = new URL("http://localhost:5000/accounts/" + request.params(":id"));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/json");

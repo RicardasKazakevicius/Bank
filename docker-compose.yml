@@ -1,12 +1,13 @@
 version: '2'
+
 services:
-  company:
-    image: "ricardaskazakevicius/superbank/v01"
+  bankass:
+    image: absimas/bank
     ports:
-    - "50:1234"
-    owner:
-      image: "absimas/bank"
-    ports: 
-       80:80
-depends_on:
-    -company
+      - 5002:4321
+  bankasr:
+    image: ricardaskazakevicius/superbank:v11
+    ports:
+      - 80:80
+    depends_on:
+      - bankass

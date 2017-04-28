@@ -101,8 +101,12 @@ public class AccountController {
 
             } catch (MalformedURLException ex) {
                 Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, ex);
+                response.status(HTTP_BAD_REQUEST);
+                return new ErrorMessage(ex);
             } catch (IOException ex) {
                 Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, ex);
+                response.status(HTTP_BAD_REQUEST);
+                return new ErrorMessage(ex);
             }
         }
         Account account = JsonTransformer.fromJson(req, Account.class);

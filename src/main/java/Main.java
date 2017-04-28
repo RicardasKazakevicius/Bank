@@ -111,7 +111,6 @@ public class Main {
         });
         
         after((req, rep) -> rep.type("application/json"));
-        
 
     }
 }

@@ -144,7 +144,7 @@ public class TransactionController {
     private static Account getAccount(AccountsData aData, Transaction transaction) {
         Account account = null;
         try {
-                URL url = new URL("http://localhost:5000/accounts/" + aData.get(transaction.getReceiverId()).getId());
+                URL url = new URL("http://localhost:80/accounts/" + aData.get(transaction.getReceiverId()).getId());
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/json");
@@ -173,8 +173,7 @@ public class TransactionController {
     
     private static void update(Account account, Transaction transaction) {
         try {
-                URL url = new URL("http://localhost:5000/accounts/" + transaction.getReceiverId() 
-                );
+                URL url = new URL("http://localhost:80/accounts/" + transaction.getReceiverId());
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 //conn.setDoOutput(true);
                 conn.setRequestMethod("PUT");

@@ -3,13 +3,13 @@
 ## Instalation
 docker pull ricardaskazakevicius/superbank:v10
 
-docker run -d -p 80:1234 ricardaskazakevicius/superbank:v10
+docker run -d -p 50:1234 ricardaskazakevicius/superbank:v10
 
 or
 
 docker build -t superbank:v1 .
 
-docker run -d -p 80:1234 superbank:v1
+docker run -d -p 50:1234 superbank:v1
 
 ## Endpoints and methods
 /accounts  GET,POST

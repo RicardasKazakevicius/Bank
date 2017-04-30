@@ -12,6 +12,7 @@ import spark.Response;
 public class AccountController {
     private static final int HTTP_BAD_REQUEST = 400;
     private static final int HTTP_NOT_FOUND = 404;
+    public static String name = "localhost"; //banks
     
     public static Object getAllAccounts(Request request, Response response, AccountsData accountData) {
         return accountData.getAll();
@@ -80,7 +81,7 @@ public class AccountController {
         if (!request.pathInfo().equals("/accounts")) {
   
             try {
-                URL url = new URL("http://localhost:80/accounts/" + request.params(":id"));
+                URL url = new URL("http://" + name + ":80/accounts/" + request.params(":id"));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/json");
@@ -98,14 +99,8 @@ public class AccountController {
 
                 conn.disconnect();
                 req = output;
-
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, ex);
-                response.status(HTTP_BAD_REQUEST);
-                return new ErrorMessage(ex);
-            } catch (IOException ex) {
-                Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, ex);
-                response.status(HTTP_BAD_REQUEST);
+            } catch (Exception ex) {
+                response.status(HTTP_NOT_FOUND);
                 return new ErrorMessage(ex);
             }
         }

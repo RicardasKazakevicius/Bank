@@ -1,13 +1,13 @@
 version: '2'
 
 services:
-  bankass:
-    image: absimas/bank
+  bankr:
+    image: "ricardaskazakevicius/superbank:v11"
     ports:
-      - 5002:4321
-  bankasr:
-    image: ricardaskazakevicius/superbank:v11
+      - 50:1234
+  banks:
+    image: "absimas/bank"
     ports:
       - 80:80
     depends_on:
-      - bankass
+      - bankr

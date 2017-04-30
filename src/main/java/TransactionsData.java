@@ -8,9 +8,9 @@ public class TransactionsData {
     public TransactionsData() {
         
         List<Transaction> transactionArray = Arrays.asList(
-            new Transaction(1, 1, 2, 10),
-            new Transaction(2, 2, 3, 20),
-            new Transaction(3, 1, 3, 5)
+            new Transaction(1, 1, 2, "bankr", 10),
+            new Transaction(2, 2, 3, "bankr", 20),
+            new Transaction(3, 1, 3, "bankr", 5)
         );
        
         transactionArray.forEach(transaction-> {
@@ -20,7 +20,8 @@ public class TransactionsData {
     
     public void create(Transaction transaction, AccountsData accountsData) {
         accountsData.get(transaction.getSenderId()).decreaseBalance(transaction.getAmount());
-        accountsData.get(transaction.getReceiverId()).increaseBalance(transaction.getAmount());
+        if (transaction.getBankName().equals("bankr"))
+            accountsData.get(transaction.getReceiverId()).increaseBalance(transaction.getAmount());
         transaction.setId(transactions.size() + 1);
         transactions.put(transaction.getId(), transaction);
     }

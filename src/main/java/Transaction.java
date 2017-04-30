@@ -4,12 +4,15 @@ public class Transaction {
     private int senderId;
     private int receiverId;
     private double amount;
+    private String bankName;
     
-    public Transaction(int id, int senderId, int receiverId, int amount) {
+    public Transaction(int id, int senderId, int receiverId, String bankName,
+            int amount) {
         this.id  = id;
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.amount = amount;
+        this.bankName = bankName;
     }
     
     public void setId(int id) {
@@ -34,5 +37,9 @@ public class Transaction {
     
     public double getAmount() {
         return amount;
+    }
+    
+    public String getBankName() {
+        return bankName;
     }
 }

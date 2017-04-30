@@ -5,10 +5,12 @@ import static spark.Spark.*;
  * @author Ričardas Kazakevičius
  */
 public class Main {
+    
+    
     public static void main(String[] args) {
         AccountsData aData = new AccountsData();
         TransactionsData tData = new TransactionsData();
-        
+
         port(1234);
         
         path("/accounts", () -> {
@@ -84,13 +86,7 @@ public class Main {
                res.header("Method", req.requestMethod());
                return TransactionController.createTransaction(req, res, tData, aData);
            }, new JsonTransformer()); 
-           
-           post("/:id", (req, res) -> {
-               res.header("PATH", req.pathInfo());
-               res.header("Method", req.requestMethod());
-               return TransactionController.createTransaction(req, res, tData, aData);
-           }, new JsonTransformer()); 
-           
+            
            put("/:id", (req, res) -> {
                res.header("PATH", req.pathInfo());
                res.header("Method", req.requestMethod());

@@ -1,6 +1,8 @@
 # Bank web service
 
 ## Instalation
+Download docker-compose.yml and run: docker-compose up -d
+
 docker pull ricardaskazakevicius/superbank:v11
 
 docker run -d -p 50:1234 ricardaskazakevicius/superbank:v11
@@ -39,9 +41,9 @@ docker run -d -p 50:1234 superbank:v1
 #### Transaction
 ```javascript
 {
-"id": 1,
-"senderId": 3,
-"receiverId": 2,
-"amount": 19.50
+"senderId": 2,
+"receiverId": 1,
+"amount": 100
+"bankName": "bankr"
 }
 ```

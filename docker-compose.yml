@@ -8,6 +8,6 @@ services:
   banks:
     image: "absimas/bank:latest"
     ports:
-      - 50:50
+      - 5000:5000
     depends_on:
       - bankr

@@ -81,7 +81,7 @@ public class AccountController {
         if (!request.pathInfo().equals("/accounts")) {
   
             try {
-                URL url = new URL("http://" + name + ":50/accounts/" + request.params(":id"));
+                URL url = new URL("http://" + name + ":80/accounts/" + request.params(":id"));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/json");

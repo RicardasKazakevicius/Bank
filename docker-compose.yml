@@ -4,10 +4,10 @@ services:
   bankr:
     image: "ricardaskazakevicius/superbank:v11"
     ports:
-      - 50:1234
+      - 80:1234
   banks:
     image: "absimas/bank:latest"
     ports:
-      - 80:80
+      - 50:50
     depends_on:
       - bankr

@@ -5,13 +5,13 @@ Download docker-compose.yml and run: docker-compose up -d
 
 docker pull ricardaskazakevicius/superbank:v11
 
-docker run -d -p 50:1234 ricardaskazakevicius/superbank:v11
+docker run -d -p 80:1234 ricardaskazakevicius/superbank:v11
 
 or
 
 docker build -t superbank:v1 .
 
-docker run -d -p 50:1234 superbank:v1
+docker run -d -p 80:1234 superbank:v1
 
 ## Endpoints and methods
 /accounts  GET,POST

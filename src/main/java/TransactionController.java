@@ -12,7 +12,7 @@ import spark.Response;
 public class TransactionController {
     private static final int HTTP_BAD_REQUEST = 400;
     private static final int HTTP_NOT_FOUND = 404;
-    public static String name = "localhost"; //banks
+    public static String name = "banks"; //banks localhost
     
     public static Object getAllTransactions(Request request, Response response, TransactionsData tData) {
         return tData.getAll();
@@ -154,7 +154,7 @@ public class TransactionController {
     private static Account getAccount(AccountsData aData, Transaction transaction) throws MalformedURLException, ProtocolException, IOException {
         Account account = null;
 
-        URL url = new URL("http://" + name + ":80/accounts/" + transaction.getReceiverId()); //aData.get(transaction.getReceiverId()).getId()
+        URL url = new URL("http://" + name + ":50/accounts/" + transaction.getReceiverId()); //aData.get(transaction.getReceiverId()).getId()
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
@@ -181,7 +181,7 @@ public class TransactionController {
         
         URL url = null;
         try {
-            url = new URL("http://" + name + ":80/accounts/" + transaction.getReceiverId());
+            url = new URL("http://" + name + ":50/accounts/" + transaction.getReceiverId());
         } catch(MalformedURLException ex) {
             ex.printStackTrace();
         }

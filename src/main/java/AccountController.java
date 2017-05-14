@@ -1,18 +1,14 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import spark.Request;
 import spark.Response;
 
 public class AccountController {
     private static final int HTTP_BAD_REQUEST = 400;
     private static final int HTTP_NOT_FOUND = 404;
-    public static String name = "banks"; //banks localhost
+    public static String name = "banks:80"; //banks:80 localhost:50
     
     public static Object getAllAccounts(Request request, Response response, AccountsData accountData) {
         return accountData.getAll();
@@ -81,7 +77,7 @@ public class AccountController {
         if (!request.pathInfo().equals("/accounts")) {
   
             try {
-                URL url = new URL("http://" + name + ":80/accounts/" + request.params(":id"));
+                URL url = new URL("http://" + name + "/accounts/" + request.params(":id"));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/json");

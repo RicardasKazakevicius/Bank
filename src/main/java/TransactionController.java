@@ -12,7 +12,7 @@ import spark.Response;
 public class TransactionController {
     private static final int HTTP_BAD_REQUEST = 400;
     private static final int HTTP_NOT_FOUND = 404;
-    public static String name = "banks"; //banks localhost
+    public static String name = "banks:80";//"localhost:50"; //banks:80 
     
     public static Object getAllTransactions(Request request, Response response, TransactionsData tData) {
         return tData.getAll();
@@ -44,7 +44,7 @@ public class TransactionController {
         
         if (transaction.getBankName().equals(banks)) { 
             try {
-                account = getAccount(aData, transaction);
+                account = getAccount(aData, transaction.getReceiverId());
             }
             catch(Exception ex) {
                 response.status(HTTP_NOT_FOUND);
@@ -55,7 +55,7 @@ public class TransactionController {
             transactionStatus = checkTransaction1(aData, transaction);
 
             if ("OK".equals(transactionStatus)) {
-                update(account, transaction);
+                update(account, transaction, true, transaction.getReceiverId());
                 tData.create(transaction, aData);
                 return transactionStatus;
             }
@@ -76,6 +76,53 @@ public class TransactionController {
         response.status(HTTP_BAD_REQUEST);
         return transactionStatus;  
     }
+    
+    public static Object createSTransaction(Request request, Response response,
+            TransactionsData tData, AccountsData aData) {
+        Account accountS = null;
+        Account accountR = null;
+        String transactionStatus = "not found";
+        String bankr = "bankr";
+        String banks = "banks";
+        
+        Transaction transaction = JsonTransformer.fromJson(request.body(), Transaction.class);
+             
+        try {
+            accountS = getAccount(aData, transaction.getSenderId());
+        }
+        catch(Exception ex) {
+            response.status(HTTP_NOT_FOUND);
+            return new ErrorMessage("Account " + transaction.getSenderId() + " not found"
+                    + " in Bank " + banks);
+        }
+
+        if (accountS.getBalance() < transaction.getAmount()) 
+            transactionStatus = "Not enough balance";
+        else 
+            transactionStatus = "OK";
+
+        if ("OK".equals(transactionStatus)) {
+            
+            accountR = aData.get(transaction.getReceiverId());
+          
+            if (accountR != null) {
+                update(accountS, transaction, false, transaction.getSenderId());
+                accountR.increaseBalance(transaction.getAmount());
+                return transactionStatus;
+            } else {
+                response.status(HTTP_NOT_FOUND);
+                return new ErrorMessage("Account " + transaction.getReceiverId() + " not found"
+                    + " in Bank " + bankr);
+            }
+        }
+        else {
+            response.status(HTTP_BAD_REQUEST);
+            return transactionStatus;  
+        }
+          
+    }
+    
+    
     
     public static Object updateTransactiont(Request request, Response response, 
             TransactionsData tData, AccountsData aData){
@@ -151,10 +198,10 @@ public class TransactionController {
         return "OK";
     }
     
-    private static Account getAccount(AccountsData aData, Transaction transaction) throws MalformedURLException, ProtocolException, IOException {
+    private static Account getAccount(AccountsData aData, int id) throws MalformedURLException, ProtocolException, IOException {
         Account account = null;
 
-        URL url = new URL("http://" + name + ":80/accounts/" + transaction.getReceiverId()); //aData.get(transaction.getReceiverId()).getId()
+        URL url = new URL("http://" + name + "/accounts/" + id); //aData.get(transaction.getReceiverId()).getId()
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
@@ -177,11 +224,11 @@ public class TransactionController {
         return account;
     }
     
-    private static void update(Account account, Transaction transaction) {
+    private static void update(Account account, Transaction transaction, boolean increase, int id) {
         
         URL url = null;
         try {
-            url = new URL("http://" + name + ":80/accounts/" + transaction.getReceiverId());
+            url = new URL("http://" + name + "/accounts/" + id);
         } catch(MalformedURLException ex) {
             ex.printStackTrace();
         }
@@ -193,7 +240,12 @@ public class TransactionController {
             conn.setDoOutput(true);
             conn.setRequestMethod("PUT");
             dataOutputStream = new DataOutputStream(conn.getOutputStream());
-            double balance = account.getBalance() + transaction.getAmount();
+            double balance = 0;
+            if (increase == true)
+                balance = account.getBalance() + transaction.getAmount();
+            else
+                balance = account.getBalance() - transaction.getAmount();
+            
             dataOutputStream.writeBytes("{\"balance\": " + balance + "}");
                         
             if (conn.getResponseCode() != 200) {
@@ -216,123 +268,59 @@ public class TransactionController {
         }
     }
 }
-
-
-//get
-        /*
-        String input = "";
+/*
+public static Object createSimBankTransaction(Request request, Response response,
+                TransactionsData tData, AccountsData aData) throws IOException {
         
+        Transaction transaction = JsonTransformer.fromJson(request.body(), Transaction.class);
+       
         URL url = null;
         try {
-            url = new URL("http://" + name + ":80/accounts/" + aData.get(transaction.getReceiverId()).getId());
+            url = new URL("http://" + name + "/transactions");
         } catch(MalformedURLException ex) {
             ex.printStackTrace();
         }
-        HttpURLConnection conn = null;
+        HttpURLConnection conn = null;       
         DataOutputStream dataOutputStream = null;
         try {
             conn = (HttpURLConnection) url.openConnection();
-            //conn.setRequestProperty("Content-Type", "application/json"); //Accept
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
-
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json"); //Accept Content-Type
+            conn.setDoOutput(true);
+            dataOutputStream = new DataOutputStream(conn.getOutputStream());
+            dataOutputStream.writeBytes("{\"sender_id\": " +transaction.getSenderId() + "," +
+                    "\"recipient_id\": " + transaction.getReceiverId() + "," + 
+                    "\"amount\": " + transaction.getAmount() + "}");                        
             
             if (conn.getResponseCode() != 200) {
                 throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
-            }
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
-            String line;
-           
-            while ((line = in.readLine()) != null) {
-                    input += line;
-            }
-            
+            }   
 
-            
-        } catch(IOException ex) {
+        } catch(Exception ex) {
+            response.status(conn.getResponseCode());
             ex.printStackTrace();
+            return "Something wrong";
         }  finally {
             if (dataOutputStream != null) {
                 try {
                     dataOutputStream.flush();
                     dataOutputStream.close();
-                } catch (IOException ex) {
+                } catch (Exception ex) {
+                    System.out.println(ex);
                     ex.printStackTrace();
                 }
             }
-            
             if (conn != null) {
                 conn.disconnect();
             }
         }
-    */
         
-
-//update
-        /*
-        try {
-            
-            URL url = new URL("http://" + name + ":80/accounts/" + transaction.getReceiverId());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestProperty("Accept", "application/json");
-            
-                    OutputStreamWriter out = new OutputStreamWriter(
-            conn.getOutputStream());
-            out.write("{\"balance\": 111111}");
-            out.close();
-            conn.getInputStream();
-            
-            conn.setRequestMethod("PUT");
-
-            if (conn.getResponseCode() != 200) {           
-                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
-            }
-
-    
-
-            conn.disconnect();
-
-      
-            
-            String requestString = "{\"balance\": 99999}";   
-            conn.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-
-            wr.writeBytes(requestString);
-            wr.flush();
-            wr.close();
-
-            BufferedReader in = new BufferedReader(
-                new InputStreamReader(conn.getInputStream()));
-
-            String inputLine;
-            StringBuffer response2 = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                    response2.append(inputLine);
-            }
-            in.close();
-            System.out.println(response2);
-             
-                
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            */
-
-
-
-              /*
-                OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
-                out.write("{\"balance\": 100000}");
-                //out.write("");
-                out.close();
-                conn.getInputStream();
-                //conn.getOutputStream();
+        Account ac = aData.get(transaction.getReceiverId());
+        if (ac == null) {
+            response.status(HTTP_NOT_FOUND);
+            return "User " + transaction.getReceiverId() + " not found in bankr";
+        }
+        ac.increaseBalance(transaction.getAmount());
+        return "OK";    
+    }
 */

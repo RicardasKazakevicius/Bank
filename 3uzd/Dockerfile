@@ -8,6 +8,6 @@ RUN ["mvn", "verify"]
 COPY src /code/src
 RUN ["mvn", "package"]
 
-EXPOSE 1234
+EXPOSE 888
 CMD ["java", "-jar", "target/SuperBank-1.0-jar-with-dependencies.jar"]
 

@@ -1,8 +1,8 @@
 
 public class Account {
     private int id;
-    private String first_name;
-    private String last_name;
+    private String first_name; // first_name
+    private String last_name; // last_name
     private double balance;
     private String password;
     private String token;
@@ -50,12 +50,10 @@ String token) {
     public double getBalance() {
         return balance;
     }
-
     public String getPassword() {
         return password;
     }
-
-    public String getToken() {
+        public String getToken() {
         return token;
     }
 }

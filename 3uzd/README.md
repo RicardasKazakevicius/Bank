@@ -6,14 +6,17 @@ docker-compose up -d
 
 #### Login as user
 ```javascript
+/login
 {
   "id": 1,
+  "first_name": "Jonas",
   "password": "1234"
 }
 ```
 
 #### Register as user
 ```javascript
+/register
 {
 "first_name": "Ramunas",
 "last_name": "Ramusis",
@@ -23,6 +26,7 @@ docker-compose up -d
 
 #### Login as admin
 ```javascript
+/login
 {
   "first_name": "admin",
   "password": "password"
@@ -31,6 +35,7 @@ docker-compose up -d
 
 #### Register as admin
 ```javascript
+/register
 {
   "first_name": "admin",
   "password": "password"

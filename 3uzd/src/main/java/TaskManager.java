@@ -58,21 +58,25 @@ public class TaskManager {
         }
         String password;
         User user = JsonTransformer.fromJson(request.body(), User.class);
-        if (user.first_name.equals("admin")) {
-            if (user.password.equals(admin.password)) {
-                return admin.token;
-            }
-            else {
-                response.status(400);
-                return "invalid password";
+        if (!user.first_name.isEmpty()) {
+            if (user.first_name.equals("admin")) {
+                if (user.password.equals(admin.password)) {
+                    return admin.token;
+                }
+                else {
+                    response.status(400);
+                    return "invalid password";
+                }
             }
         }
-        Account account = getAccount(user.id);    
+        Account account;
+        
         try{
+            account = getAccount(user.id);
             if (account == null) {
                 response.status(404);
                 throw new Exception("User with specified id not found");
-            }    
+            }  
             password = account.getPassword();
             if (!password.equals(user.password)) {
                 response.status(400);
